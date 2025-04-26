@@ -2,7 +2,7 @@ import os
 from locksmith.core import generate_password, generate_key, encrypt_password, decrypt_password, save_to_file, load_from_file
 
 # Config
-account_name = "itj"
+account_name = "bitwarden"
 passwords_dir = "passwords"
 keys_dir = "keys"
 
