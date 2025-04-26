@@ -1,37 +1,28 @@
-import secrets
-import string
-from cryptography.fernet import Fernet
+import os
+from locksmith.core import generate_password, generate_key, encrypt_password, decrypt_password, save_to_file, load_from_file
 
-def generate_password(length=15):
-    characters = string.ascii_letters + string.digits + string.punctuation
-    password = ''.join(secrets.choice(characters) for _ in range(length))
-    return password
+# Config
+account_name = "itj"
+passwords_dir = "passwords"
+keys_dir = "keys"
 
-def generate_key():
-    return Fernet.generate_key()
-
-def encrypt_password(password, key):
-    fernet = Fernet(key)
-    encrypted = fernet.encrypt(password.encode())
-    return encrypted
-
-def decrypt_password(encrypted_password, key):
-    fernet = Fernet(key)
-    decrypted = fernet.decrypt(encrypted_password)
-    return decrypted.decode()
+# Ensure directories exist
+os.makedirs(passwords_dir, exist_ok=True)
+os.makedirs(keys_dir, exist_ok=True)
 
 if __name__ == "__main__":
-    # 1. Generate password
-    password = generate_password()
+    # Generate password
+    password = generate_password(20)  # stronger for work accounts
     print(f"Generated password: {password}")
 
-    # 2. Generate encryption key
+    # Generate key
     key = generate_key()
 
-    # 3. Encrypt the password
+    # Encrypt password
     encrypted_password = encrypt_password(password, key)
-    print(f"Encrypted password: {encrypted_password}")
 
-    # 4. Decrypt the password
-    decrypted_password = decrypt_password(encrypted_password, key)
-    print(f"Decrypted password: {decrypted_password}")
+    # Save encrypted password and key
+    save_to_file(f"{passwords_dir}/{account_name}.enc", encrypted_password)
+    save_to_file(f"{keys_dir}/{account_name}.key", key)
+
+    print(f"🔒 Password encrypted and saved for account: {account_name}")
